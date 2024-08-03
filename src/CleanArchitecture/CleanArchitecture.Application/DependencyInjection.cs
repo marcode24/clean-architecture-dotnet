@@ -1,3 +1,4 @@
+using CleanArchitecture.Application.Abstractions.Behaviors;
 using CleanArchitecture.Domain.Alquileres;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +11,7 @@ public static class DependencyInjection
     services.AddMediatR(configuration =>
     {
       configuration.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+      configuration.AddOpenBehavior(typeof(LoggingBehavior<,>));
     });
 
     services.AddTransient<PrecioService>();
