@@ -33,5 +33,7 @@ internal sealed class VehiculoConfiguration : IEntityTypeConfiguration<Vehiculo>
       pb.Property(p => p.TipoMoneda)
         .HasConversion(tp => tp.Codigo, c => TipoMoneda.FromCodigo(c));
     });
+
+    builder.Property<uint>("Version").IsRowVersion();
   }
 }
