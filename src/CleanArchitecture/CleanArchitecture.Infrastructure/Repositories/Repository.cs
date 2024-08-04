@@ -14,8 +14,7 @@ internal abstract class Repository<T> where T : Entity
   public async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
   {
     return await _dbContext.Set<T>()
-      .FirstOrDefaultAsync(e => e.Id == id, cancellationToken)
-      ?? throw new Exception("Entity not found.");
+      .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
   }
 
   public void Add(T entity)

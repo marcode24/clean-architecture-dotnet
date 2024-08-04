@@ -46,7 +46,7 @@ internal sealed class SearchVehiculosQueryHandler : IQueryHandler<SearchVehiculo
         WHERE b.vehiculo_id = a.id
               AND b.duracion_inicio <= @EndDate
               AND b.duracion_fin >= @StartDate
-              AND b.estado = ANY(@ActiveAlquilerStatuses)
+              AND b.status = ANY(@ActiveAlquilerStatuses)
       )
     """;
 
