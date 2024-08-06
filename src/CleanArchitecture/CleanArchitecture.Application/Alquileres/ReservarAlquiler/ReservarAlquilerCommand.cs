@@ -1,10 +1,12 @@
 using CleanArchitecture.Application.Abstractions.Messaging;
+using CleanArchitecture.Domain.Users;
+using CleanArchitecture.Domain.Vehiculos;
 
 namespace CleanArchitecture.Application.Alquileres.ReservarAlquiler;
 
 public record ReservarAlquilerCommand(
-  Guid VehiculoId,
-  Guid UsuarioId,
+  VehiculoId VehiculoId,
+  UserId UsuarioId,
   DateOnly FechaInicio,
   DateOnly FechaFin
 ) : ICommand<Guid>;

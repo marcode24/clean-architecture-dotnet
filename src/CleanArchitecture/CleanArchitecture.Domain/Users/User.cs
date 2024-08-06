@@ -3,11 +3,11 @@ using CleanArchitecture.Domain.Users.Events;
 
 namespace CleanArchitecture.Domain.Users;
 
-public sealed class User : Entity
+public sealed class User : Entity<UserId>
 {
   private User() { }
   private User(
-    Guid id,
+    UserId id,
     Nombre nombre,
     Apellido apellido,
     Email email
@@ -24,9 +24,9 @@ public sealed class User : Entity
 
   public static User Create(Nombre nombre, Apellido apellido, Email email)
   {
-    var user = new User(Guid.NewGuid(), nombre, apellido, email);
+    var user = new User(UserId.New(), nombre, apellido, email);
     // al crear un usuario se lanza un evento
-    user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id));
+    user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id!));
     return user;
   }
 }

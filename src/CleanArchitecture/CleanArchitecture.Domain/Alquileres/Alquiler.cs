@@ -1,17 +1,18 @@
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Alquileres.Events;
 using CleanArchitecture.Domain.Shared;
+using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Domain.Vehiculos;
 
 namespace CleanArchitecture.Domain.Alquileres;
 
-public sealed class Alquiler : Entity
+public sealed class Alquiler : Entity<AlquilerId>
 {
   private Alquiler() { }
   private Alquiler(
-    Guid id,
-    Guid vehiculoId,
-    Guid usuarioId,
+    AlquilerId id,
+    VehiculoId vehiculoId,
+    UserId usuarioId,
     DateRange duracion,
     Moneda precioPorPeriodo,
     Moneda mantenimiento,
@@ -31,8 +32,8 @@ public sealed class Alquiler : Entity
     Duracion = duracion;
     FechaCreacion = fechaCreacion;
   }
-  public Guid VehiculoId { get; private set; }
-  public Guid UsuarioId { get; private set; }
+  public VehiculoId? VehiculoId { get; private set; }
+  public UserId? UsuarioId { get; private set; }
   public Moneda? PrecioPorPeriodo { get; private set; }
   public Moneda? Mantenimiento { get; private set; }
   public Moneda? Accesorios { get; private set; }
@@ -46,7 +47,7 @@ public sealed class Alquiler : Entity
   public DateTime? FechaCancelacion { get; private set; }
   public static Alquiler Reservar(
     Vehiculo vehiculo,
-    Guid usuarioId,
+    UserId usuarioId,
     DateRange duracion,
     DateTime fechaCreacion,
     PrecioService precioService
@@ -54,8 +55,8 @@ public sealed class Alquiler : Entity
   {
     var precioDetalle = precioService.CalcularPrecio(vehiculo, duracion);
     var alquiler = new Alquiler(
-      Guid.NewGuid(),
-      vehiculo.Id,
+      AlquilerId.New(),
+      vehiculo.Id!,
       usuarioId,
       duracion,
       precioDetalle.PrecioPorPeriodo,

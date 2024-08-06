@@ -14,12 +14,15 @@ internal sealed class ReviewConfiguration : IEntityTypeConfiguration<Review>
     builder.ToTable("reviews");
     builder.HasKey(r => r.Id);
 
+    builder.Property(r => r.Id)
+      .HasConversion(id => id!.Value, value => new ReviewId(value));
+
     builder.Property(r => r.Rating)
-      .HasConversion(r => r.Value, v => Rating.Create(v).Value);
+      .HasConversion(r => r!.Value, v => Rating.Create(v).Value);
 
     builder.Property(r => r.Comentario)
       .HasMaxLength(200)
-      .HasConversion(c => c.Value, v => new Comentario(v));
+      .HasConversion(c => c!.Value, v => new Comentario(v));
 
     builder.HasOne<Vehiculo>()
       .WithMany()
