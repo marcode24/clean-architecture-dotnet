@@ -10,22 +10,23 @@ public sealed class User : Entity<UserId>
     UserId id,
     Nombre nombre,
     Apellido apellido,
-    Email email
+    Email email,
+    PasswordHash passwordHash
   ) : base(id)
   {
     Nombre = nombre;
     Apellido = apellido;
     Email = email;
+    PasswordHash = passwordHash;
   }
 
   public Nombre? Nombre { get; private set; }
   public Apellido? Apellido { get; private set; }
   public Email? Email { get; private set; }
-
-  public static User Create(Nombre nombre, Apellido apellido, Email email)
+  public PasswordHash? PasswordHash { get; private set; }
+  public static User Create(Nombre nombre, Apellido apellido, Email email, PasswordHash passwordHash)
   {
-    var user = new User(UserId.New(), nombre, apellido, email);
-    // al crear un usuario se lanza un evento
+    var user = new User(UserId.New(), nombre, apellido, email, passwordHash);
     user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id!));
     return user;
   }
