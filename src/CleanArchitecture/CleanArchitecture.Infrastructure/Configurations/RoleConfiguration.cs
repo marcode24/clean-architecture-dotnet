@@ -12,5 +12,9 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
     builder.HasKey(x => x.Id);
 
     builder.HasData(Role.GetValues());
+
+    builder.HasMany(x => x.Permissions)
+      .WithMany()
+      .UsingEntity<RolePermission>();
   }
 }
