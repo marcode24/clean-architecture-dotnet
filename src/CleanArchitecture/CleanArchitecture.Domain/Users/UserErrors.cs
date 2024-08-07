@@ -1,7 +1,6 @@
 using CleanArchitecture.Domain.Abstractions;
 
 namespace CleanArchitecture.Domain.Users;
-
 public static class UsersErrors
 {
   public static readonly Error NotFound = new(
@@ -11,5 +10,9 @@ public static class UsersErrors
   public static readonly Error InvalidCredentials = new(
     "invalid_credentials",
     "The credentials are invalid."
+  );
+  public static Error AlreadyExists = new(
+    "user_already_exists",
+    "The user already exists."
   );
 }
