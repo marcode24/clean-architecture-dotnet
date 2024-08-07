@@ -17,9 +17,9 @@ services:
     container_name: cleanarchitectureapi
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - "ConnectionStrings_DataBaseConnection=Host=cleanarchitecturedb;Port=5432;Database=cleanarchitecture;Username=postgres;Password=postgres;"
+      - ASPNETCORE_URLS=http://+:5000
+      - "ConnectionStrings__DataBaseConnection=Host=cleanarchitecturedb;Port=5432;Database=cleanarchitecture;Username=postgres;Password=postgres;"
     depends_on:
       - cleanarchitecturedb
     ports:
-      - 5000:80
+      - 80:5000

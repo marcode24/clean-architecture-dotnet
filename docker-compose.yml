@@ -8,4 +8,4 @@ services:
     image: ${DOCKER_REGISTRY-}cleanarchitectureapi
     build:
       context: .
-      dockerfile: src/CleanArchitecture.Api/Dockerfile
+      dockerfile: src/CleanArchitecture/CleanArchitecture.Api/Dockerfile
