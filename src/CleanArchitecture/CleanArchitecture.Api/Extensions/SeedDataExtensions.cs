@@ -1,12 +1,53 @@
 using Bogus;
 using CleanArchitecture.Application.Abstractions.Data;
+using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Domain.Vehiculos;
+using CleanArchitecture.Infrastructure;
 using Dapper;
+using Microsoft.VisualBasic;
 
 namespace CleanArchitecture.Api.Extensions;
 
 public static class SeedDataExtensions
 {
+  public static void SeedDataAuthentication(this IApplicationBuilder app)
+  {
+    using var scope = app.ApplicationServices.CreateScope();
+    var service = scope.ServiceProvider;
+    var loggerFactory = service.GetRequiredService<ILoggerFactory>();
+
+    try
+    {
+      var context = service.GetRequiredService<ApplicationDbContext>();
+      if (!context.Set<User>().Any())
+      {
+        var passwordHash = BCrypt.Net.BCrypt.HashPassword("Mysecret123$", 10);
+        var user = User.Create(
+          new Nombre("Marco"),
+          new Apellido("Cruz"),
+          new Email("marcotest@gmail.com"),
+          new PasswordHash(passwordHash)
+        );
+        context.Add(user);
+
+        passwordHash = BCrypt.Net.BCrypt.HashPassword("Mysecret123%", 10);
+        user = User.Create(
+          new Nombre("Admin"),
+          new Apellido("Admin"),
+          new Email("Admin@gmail.com"),
+          new PasswordHash(passwordHash)
+        );
+
+        context.Add(user);
+        context.SaveChangesAsync().Wait();
+      }
+    }
+    catch (Exception ex)
+    {
+      var logger = loggerFactory.CreateLogger<ApplicationDbContext>();
+      logger.LogError(ex.Message, "An error occurred while seeding the database.");
+    }
+  }
   public static void SeedData(this IApplicationBuilder app)
   {
     using var scope = app.ApplicationServices.CreateScope();
@@ -19,7 +60,8 @@ public static class SeedDataExtensions
 
     for (var i = 0; i < 100; i++)
     {
-      vehiculos.Add(new {
+      vehiculos.Add(new
+      {
         Id = Guid.NewGuid(),
         Vin = faker.Vehicle.Vin(),
         Modelo = faker.Vehicle.Model(),
