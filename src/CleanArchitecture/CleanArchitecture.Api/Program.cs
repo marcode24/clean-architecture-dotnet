@@ -48,9 +48,11 @@ await app.ApplyMigration();
 app.SeedData();
 app.SeedDataAuthentication();
 
-app.UseCustomExceptionHandler();
+app.UseRequestContextLogging();
 
 app.UseSerilogRequestLogging();
+
+app.UseCustomExceptionHandler();
 
 app.UseAuthentication();
 app.UseAuthorization();
