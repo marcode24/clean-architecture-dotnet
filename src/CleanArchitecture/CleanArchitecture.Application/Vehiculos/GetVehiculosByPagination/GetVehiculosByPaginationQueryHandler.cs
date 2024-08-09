@@ -1,6 +1,7 @@
 using CleanArchitecture.Application.Abstractions.Messaging;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Vehiculos;
+using CleanArchitecture.Domain.Vehiculos.Specifications;
 
 namespace CleanArchitecture.Application.Vehiculos.GetVehiculosByPagination;
 
@@ -13,8 +14,17 @@ internal sealed class GetVehiculosByPaginationQueryHandler() : IQueryHandler<Get
     _vehiculosRepository = vehiculosRepository;
   }
 
-  public Task<Result<PaginationResult<Vehiculo, VehiculoId>>> Handle(GetVehiculosByPaginationQuery request, CancellationToken cancellationToken)
+  public async Task<Result<PaginationResult<Vehiculo, VehiculoId>>> Handle(GetVehiculosByPaginationQuery request, CancellationToken cancellationToken)
   {
-    throw new NotImplementedException();
+    var spec = new VehiculoPaginationSpecification(
+      request.Sort!,
+      request.PageIndex,
+      request.PageSize,
+      request.Search!
+    );
+
+    var records = await _vehiculosRepository!.GetAllWithSpec(spec);
+    var specCount = new VehiculoPaginationCountingSpecification(request.Modelo!);
+    var totalRecords = await _vehiculosRepository!.CountAsync(specCount);
   }
 }
