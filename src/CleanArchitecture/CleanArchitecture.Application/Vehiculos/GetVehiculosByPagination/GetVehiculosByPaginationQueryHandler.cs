@@ -26,5 +26,19 @@ internal sealed class GetVehiculosByPaginationQueryHandler() : IQueryHandler<Get
     var records = await _vehiculosRepository!.GetAllWithSpec(spec);
     var specCount = new VehiculoPaginationCountingSpecification(request.Modelo!);
     var totalRecords = await _vehiculosRepository!.CountAsync(specCount);
+
+    var rounded = Math.Ceiling(Convert.ToDecimal(totalRecords) / Convert.ToDecimal(request.PageSize));
+    var totalPages = Convert.ToInt32(rounded);
+
+    var recordsByPage = records.Count;
+    return new PaginationResult<Vehiculo, VehiculoId>
+    {
+      Count = totalRecords,
+      Data = [.. records],
+      PageCount = totalPages,
+      PageIndex = request.PageIndex,
+      PageSize = request.PageSize,
+      ResultByPage = recordsByPage
+    };
   }
 }
