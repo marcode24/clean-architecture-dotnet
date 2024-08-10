@@ -1,6 +1,9 @@
+using System.Linq.Expressions;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Infrastructure.Specifications;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace CleanArchitecture.Infrastructure.Repositories;
 
@@ -42,4 +45,14 @@ internal abstract class Repository<TEntity, TEntityId> where TEntity : Entity<TE
   {
     return await ApplySpecification(specification).CountAsync(cancellationToken);
   }
+
+  public async Task<PagedResults<TEntity, TEntityId> GetPaginationAsync(
+    Expression<Func<TEntity, bool>>? predicate,
+    Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> includes,
+    int page,
+    int pageSize,
+    string orderBy,
+    bool ascending,
+    bool disableTracking = true
+  ) {}
 }
