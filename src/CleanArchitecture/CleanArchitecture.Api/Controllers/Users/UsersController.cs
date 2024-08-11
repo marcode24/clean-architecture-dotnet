@@ -1,3 +1,5 @@
+using Asp.Versioning;
+using CleanArchitecture.Api.Utils;
 using CleanArchitecture.Application.Users.GetUsersDapperPagination;
 using CleanArchitecture.Application.Users.GetUsersPagination;
 using CleanArchitecture.Application.Users.LoginUser;
@@ -11,7 +13,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace CleanArchitecture.Api.Controllers.Users;
 
 [ApiController]
-[Route("api/users")]
+[ApiVersion(ApiVersions.V1)]
+[ApiVersion(ApiVersions.V2)]
+[Route("api/v{version:ApiVersion}/users")]
 public class UsersController : ControllerBase
 {
   private readonly ISender _sender;
@@ -22,7 +26,22 @@ public class UsersController : ControllerBase
 
   [AllowAnonymous]
   [HttpPost("login")]
-  public async Task<IActionResult> Login([FromBody] LoginUserRequest request, CancellationToken cancellationToken)
+  [MapToApiVersion(ApiVersions.V1)]
+  public async Task<IActionResult> LoginV1([FromBody] LoginUserRequest request, CancellationToken cancellationToken)
+  {
+    var command = new LoginCommand(request.Email, request.Password);
+    var result = await _sender.Send(command, cancellationToken);
+
+    if (result.IsFailure)
+      return Unauthorized(result.Error);
+
+    return Ok(result.Value);
+  }
+
+  [AllowAnonymous]
+  [HttpPost("login")]
+  [MapToApiVersion(ApiVersions.V2)]
+  public async Task<IActionResult> LoginV2([FromBody] LoginUserRequest request, CancellationToken cancellationToken)
   {
     var command = new LoginCommand(request.Email, request.Password);
     var result = await _sender.Send(command, cancellationToken);
