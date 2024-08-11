@@ -35,7 +35,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
-builder.Services.AddSwaggerGen(opt => {
+builder.Services.AddSwaggerGen(opt =>
+{
   opt.CustomSchemaIds(type => type.ToString());
 });
 
@@ -44,10 +45,13 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
+app.MapGet("/", () => "Hello World en CleanArchitecture.Api!");
+
 if (app.Environment.IsDevelopment())
 {
   app.UseSwagger();
-  app.UseSwaggerUI(opt => {
+  app.UseSwaggerUI(opt =>
+  {
     var descriptions = app.DescribeApiVersions();
     foreach (var description in descriptions)
     {
