@@ -1,3 +1,4 @@
+using CleanArchitecture.Domain.Roles;
 using CleanArchitecture.Domain.UnitTests.Infrastructure;
 using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Domain.Users.Events;
@@ -28,5 +29,13 @@ public class UserTests : BaseTest
     var domainEvent = AssertDomainWasPublished<UserCreatedDomainEvent>(user);
 
     domainEvent!.UserId.Should().Be(user.Id);
+  }
+
+  [Fact]
+  public void Create_Should_AddRegistrerRoleToUser()
+  {
+    var user = User.Create(UserMock.nombre, UserMock.apellido, UserMock.email, UserMock.password);
+
+    user.Roles.Should().Contain(Role.Cliente);
   }
 }
