@@ -67,7 +67,7 @@ public class UsersController : ControllerBase
 
   [AllowAnonymous]
   [HttpPost("getPagination", Name = "GetUsersPagination")]
-  [ProducesResponseType(typeof(PaginationResult<User, UserId>), StatusCodes.Status200OK)]
+  [ProducesResponseType(typeof(PagedResults<User, UserId>), StatusCodes.Status200OK)]
   public async Task<ActionResult<PagedResults<User, UserId>>> GetPagination(
     [FromQuery] GetUsersPaginationQuery paginationQuery
   )

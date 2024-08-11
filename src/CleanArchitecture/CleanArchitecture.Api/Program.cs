@@ -1,3 +1,4 @@
+using CleanArchitecture.Api.Documentation;
 using CleanArchitecture.Api.Extensions;
 using CleanArchitecture.Api.OptionsSetup;
 using CleanArchitecture.Application;
@@ -31,7 +32,12 @@ builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHand
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+
+builder.Services.AddSwaggerGen(opt => {
+  opt.CustomSchemaIds(type => type.ToString());
+});
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -41,7 +47,15 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
   app.UseSwagger();
-  app.UseSwaggerUI();
+  app.UseSwaggerUI(opt => {
+    var descriptions = app.DescribeApiVersions();
+    foreach (var description in descriptions)
+    {
+      var url = $"/swagger/{description.GroupName}/swagger.json";
+      var name = description.GroupName.ToUpperInvariant();
+      opt.SwaggerEndpoint(url, name);
+    }
+  });
 }
 
 await app.ApplyMigration();

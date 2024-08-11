@@ -25,11 +25,17 @@ public static class DependencyInjection
     IConfiguration configuration
   )
   {
-    services.AddApiVersioning(opt => {
+    services.AddApiVersioning(opt =>
+    {
       opt.DefaultApiVersion = new ApiVersion(1);
       opt.ReportApiVersions = true;
       opt.ApiVersionReader = new UrlSegmentApiVersionReader();
-    }).AddMvc();
+    }).AddMvc()
+      .AddApiExplorer(opt =>
+      {
+        opt.GroupNameFormat = "'v'V";
+        opt.SubstituteApiVersionInUrl = true;
+      });
 
     services.AddTransient<IDateTimeProvider, DateTimeProvider>();
     services.AddTransient<IEmailService, EmailService>();
