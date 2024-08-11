@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using CleanArchitecture.Application.Abstractions.Clock;
 using CleanArchitecture.Application.Abstractions.Data;
 using CleanArchitecture.Application.Abstractions.Email;
@@ -24,6 +25,12 @@ public static class DependencyInjection
     IConfiguration configuration
   )
   {
+    services.AddApiVersioning(opt => {
+      opt.DefaultApiVersion = new ApiVersion(1);
+      opt.ReportApiVersions = true;
+      opt.ApiVersionReader = new UrlSegmentApiVersionReader();
+    }).AddMvc();
+
     services.AddTransient<IDateTimeProvider, DateTimeProvider>();
     services.AddTransient<IEmailService, EmailService>();
 
