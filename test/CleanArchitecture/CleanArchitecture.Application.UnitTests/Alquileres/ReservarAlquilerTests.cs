@@ -1,5 +1,6 @@
 using CleanArchitecture.Application.Abstractions.Clock;
 using CleanArchitecture.Application.Alquileres.ReservarAlquiler;
+using CleanArchitecture.Application.Exceptions;
 using CleanArchitecture.Application.UnitTests.Users;
 using CleanArchitecture.Application.UnitTests.Vehiculos;
 using CleanArchitecture.Domain.Abstractions;
@@ -8,6 +9,7 @@ using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Domain.Vehiculos;
 using FluentAssertions;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using Xunit;
 
 namespace CleanArchitecture.Application.UnitTests.Alquileres;
@@ -103,6 +105,41 @@ public class ReservarAlquilerTests
       duracion,
       Arg.Any<CancellationToken>()
     ).Returns(true);
+
+    var resultado = await _reservarAlquilerCommandHandlerMock.Handle(_reservarAlquilerCommand, default);
+
+    resultado.Error.Should().Be(AlquilerErrors.Overlap);
+  }
+
+  [Fact]
+  public async Task Handle_Should_ReturnFailure_WheUnitOfWorkThrows()
+  {
+    var user = UserMock.Create();
+    var vehiculo = VehiculoMock.Create();
+    var duracion = DateRange.Create(
+      _reservarAlquilerCommand.FechaInicio,
+      _reservarAlquilerCommand.FechaFin
+    );
+
+    _userRepositoryMock.GetByIdAsync(
+      _reservarAlquilerCommand.UsuarioId,
+      Arg.Any<CancellationToken>()
+    ).Returns(user);
+
+    _vehiculosRepositoryMock.GetByIdAsync(
+      _reservarAlquilerCommand.VehiculoId,
+      Arg.Any<CancellationToken>()
+    ).Returns(vehiculo);
+
+    _alquilerRepositoryMock.IsOverlappingAsync(
+      vehiculo,
+      duracion,
+      Arg.Any<CancellationToken>()
+    ).Returns(false);
+
+    _unitOfWorkMock.SaveChangesAsync()
+      .ThrowsAsync(new ConcurrencyException("ConcurrencyException", new Exception())
+    );
 
     var resultado = await _reservarAlquilerCommandHandlerMock.Handle(_reservarAlquilerCommand, default);
 
