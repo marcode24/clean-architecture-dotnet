@@ -1,5 +1,6 @@
 using CleanArchitecture.Application.Abstractions.Clock;
 using CleanArchitecture.Application.Alquileres.ReservarAlquiler;
+using CleanArchitecture.Application.UnitTests.Users;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Alquileres;
 using CleanArchitecture.Domain.Users;
@@ -55,5 +56,24 @@ public class ReservarAlquilerTests
     var resultado = await _reservarAlquilerCommandHandlerMock.Handle(_reservarAlquilerCommand, default);
 
     resultado.Error.Should().Be(UsersErrors.NotFound);
+  }
+
+  [Fact]
+  public async Task Handle_Should_ReturnFailure_WhenVehiculoIsNull()
+  {
+    var user = UserMock.Create();
+
+    _userRepositoryMock
+      .GetByIdAsync(_reservarAlquilerCommand.UsuarioId, Arg.Any<CancellationToken>())
+      .Returns(user);
+
+    _vehiculosRepositoryMock.GetByIdAsync(
+      _reservarAlquilerCommand.VehiculoId,
+      Arg.Any<CancellationToken>()
+    ).Returns((Vehiculo?)null);
+
+    var resultado = await _reservarAlquilerCommandHandlerMock.Handle(_reservarAlquilerCommand, default);
+
+    resultado.Error.Should().Be(VehiculoErrors.NotFound);
   }
 }
