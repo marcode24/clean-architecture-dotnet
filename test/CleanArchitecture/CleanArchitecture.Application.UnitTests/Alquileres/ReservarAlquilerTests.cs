@@ -145,4 +145,35 @@ public class ReservarAlquilerTests
 
     resultado.Error.Should().Be(AlquilerErrors.Overlap);
   }
+
+  [Fact]
+  public async Task Handle_Should_Return_Success_WhenAlquilerIsReservado()
+  {
+    var user = UserMock.Create();
+    var vehiculo = VehiculoMock.Create();
+    var duracion = DateRange.Create(
+      _reservarAlquilerCommand.FechaInicio,
+      _reservarAlquilerCommand.FechaFin
+    );
+
+    _userRepositoryMock.GetByIdAsync(
+      _reservarAlquilerCommand.UsuarioId,
+      Arg.Any<CancellationToken>()
+    ).Returns(user);
+
+    _vehiculosRepositoryMock.GetByIdAsync(
+      _reservarAlquilerCommand.VehiculoId,
+      Arg.Any<CancellationToken>()
+    ).Returns(vehiculo);
+
+    _alquilerRepositoryMock.IsOverlappingAsync(
+      vehiculo,
+      duracion,
+      Arg.Any<CancellationToken>()
+    ).Returns(false);
+
+    var resultado = await _reservarAlquilerCommandHandlerMock.Handle(_reservarAlquilerCommand, default);
+
+    resultado.IsSuccess.Should().BeTrue();
+  }
 }
