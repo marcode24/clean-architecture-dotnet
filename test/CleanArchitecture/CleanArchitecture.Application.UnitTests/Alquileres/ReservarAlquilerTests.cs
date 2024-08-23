@@ -4,7 +4,9 @@ using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Alquileres;
 using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Domain.Vehiculos;
+using FluentAssertions;
 using NSubstitute;
+using Xunit;
 
 namespace CleanArchitecture.Application.UnitTests.Alquileres;
 
@@ -41,5 +43,17 @@ public class ReservarAlquilerTests
       _unitOfWorkMock,
       dateTimeProviderMock
     );
+  }
+
+  [Fact]
+  public async Task Handle_Should_ReturnFailure_WhenUserIsNull()
+  {
+    _userRepositoryMock
+      .GetByIdAsync(_reservarAlquilerCommand.UsuarioId, Arg.Any<CancellationToken>())
+      .Returns((User?)null);
+
+    var resultado = await _reservarAlquilerCommandHandlerMock.Handle(_reservarAlquilerCommand, default);
+
+    resultado.Error.Should().Be(UsersErrors.NotFound);
   }
 }
