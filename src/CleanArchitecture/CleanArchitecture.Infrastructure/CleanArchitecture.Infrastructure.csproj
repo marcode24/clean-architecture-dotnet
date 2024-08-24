@@ -26,4 +26,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="CleanArchitecture.Application.IntegrationTests" />
+  </ItemGroup>
+
 </Project>
