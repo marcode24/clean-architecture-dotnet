@@ -14,7 +14,7 @@ using Xunit;
 
 namespace CleanArchitecture.Api.FunctionalTests.Infrastructure;
 
-public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
+public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
   private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
     .WithImage("postgres:16.0")
