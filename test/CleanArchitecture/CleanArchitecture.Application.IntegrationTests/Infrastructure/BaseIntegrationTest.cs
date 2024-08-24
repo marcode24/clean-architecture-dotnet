@@ -8,8 +8,8 @@ namespace CleanArchitecture.Application.IntegrationTests;
 public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppFactory>
 {
   private readonly IServiceScope _serviceScope;
-  private readonly ISender Sender;
-  private readonly ApplicationDbContext dbContext;
+  protected readonly ISender Sender;
+  protected readonly ApplicationDbContext dbContext;
 
   protected BaseIntegrationTest(IntegrationTestWebAppFactory factory)
   {
