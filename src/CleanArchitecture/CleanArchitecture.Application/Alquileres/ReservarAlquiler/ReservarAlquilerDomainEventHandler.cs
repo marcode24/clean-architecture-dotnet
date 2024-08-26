@@ -31,6 +31,10 @@ internal sealed class ReservarAlquilerDomainEventHandler : INotificationHandler<
     var user = await _userRepository.GetByIdAsync(alquiler.UsuarioId!, cancellationToken);
     if (user is null) return;
 
-    await _emailService.SendAsync(user.Email!, "Alquiler reservado", $"El alquiler {alquiler.Id} ha sido reservado.");
+    _emailService.Send(
+      user.Email!.Value!,
+      "Alquiler reservado",
+      $"El alquiler {alquiler.Id} ha sido reservado."
+    );
   }
 }

@@ -5,6 +5,7 @@ using CleanArchitecture.Application;
 using CleanArchitecture.Application.Abstractions.Authentication;
 using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Authentication;
+using CleanArchitecture.Infrastructure.Email;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Serilog;
@@ -22,6 +23,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
   .AddJwtBearer();
 
 builder.Services.ConfigureOptions<JwtOptionsSetup>();
+
+builder.Services.Configure<GmailSettings>(builder.Configuration.GetSection("GmailSettings"));
+
 builder.Services.ConfigureOptions<JWTBearerOptionsSetup>();
 
 builder.Services.AddTransient<IJwtProvider, JwtProvider>();
